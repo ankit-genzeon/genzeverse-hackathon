@@ -1,0 +1,31 @@
+Can I get my timesheet for last week?
+Submit my timesheet for week of Jan 1st - 8 hours on project A, 4 hours on project B.
+What is the status of my timesheet for week of Dec 15?
+Are there any holidays this month?
+Can I get my timesheet for Dec 15?
+Submit my timesheet for week of Jan 1st - 8 hours on project A, 4 hours on project B, 3 hours on project C.
+Has my timesheet for last week been approved?
+What are the holidays for January?
+Can I get my timesheet for the first week of January?
+Submit my timesheet for January - 160 hours on project A.
+What is the status of my timesheet for Dec 15?
+What are the upcoming holidays?
+Can I get my timesheet for January?
+Submit my timesheet for last week - 8 hours on project A, 4 hours on project B, 3 hours on project C, 2 hours on project D.
+What is the status of my timesheet for the first week of January?
+What were the holidays for last year?
+Can I get a detailed timesheet for last week?
+Submit my timesheet for last week - 40 hours on project A.
+What is the status of my timesheet for January?
+What are the holidays for this year?
+Can I get my timesheet for project A?
+Submit my timesheet for Dec 15 - 8 hours on project A.
+What is the status of my timesheet for project A?
+Are there any holidays on Dec 25?
+Can I get my timesheet for last year?
+Submit my timesheet for the first week of January - 40 hours on project A.
+What is the status of my timesheet for last year?
+What are all the holidays?
+Can I get my timesheet for Dec 15?
+Submit my timesheet for last year - 2000 hours on project A.
+Can I get my timesheet for week ending 2023-02-10?

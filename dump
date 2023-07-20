@@ -1,0 +1,263 @@
+CREATE TABLE timesheets (
+  id SERIAL PRIMARY KEY, 
+  employee_id VARCHAR(50) NOT NULL,
+  week_ending DATE NOT NULL,
+  project_code VARCHAR(20) NOT NULL,
+  monday_hours INTEGER CHECK(monday_hours <= 9),
+  tuesday_hours INTEGER CHECK(tuesday_hours <= 9),
+  wednesday_hours INTEGER CHECK(wednesday_hours <= 9),
+  thursday_hours INTEGER CHECK(thursday_hours <= 9),
+  friday_hours INTEGER CHECK(friday_hours <= 9),
+  total_daily_hours INTEGER CHECK(total_daily_hours <= 9),
+  total_weekly_hours INTEGER CHECK(total_weekly_hours <= 45),
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+CREATE TABLE employees (
+  id SERIAL PRIMARY KEY, 
+  employee_id VARCHAR(50) NOT NULL UNIQUE,
+  password_hash VARCHAR(128) NOT NULL,
+  role VARCHAR(20) NOT NULL CHECK(role in ('Employee', 'Manager')),
+  manager_id VARCHAR(50),
+  FOREIGN KEY(manager_id) REFERENCES employees(employee_id)
+);
+
+CREATE TABLE notifications (
+  id SERIAL PRIMARY KEY,
+  employee_id VARCHAR(50) NOT NULL,
+  week_ending DATE NOT NULL,
+  hours_worked INTEGER NOT NULL,
+  status VARCHAR(20) NOT NULL CHECK(status in ('Unread', 'Read')),
+  FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+);
+
+CREATE TABLE holidays (
+  id SERIAL PRIMARY KEY,
+  date DATE NOT NULL,
+  name VARCHAR(50)
+);
+
+
+import psycopg2
+
+# Connect to your postgres DB
+conn = psycopg2.connect(
+    dbname="your_database",
+    user="your_username",
+    password="your_password",
+    host="localhost" # or the IP address of your PostgreSQL server
+)
+
+# Open a cursor to perform database operations
+cur = conn.cursor()
+
+# Execute SQL commands
+cur.execute('''
+    CREATE TABLE timesheets (
+        id SERIAL PRIMARY KEY, 
+        employee_id VARCHAR(50) NOT NULL,
+        week_ending DATE NOT NULL,
+        project_code VARCHAR(20) NOT NULL,
+        monday_hours INTEGER CHECK(monday_hours <= 9),
+        tuesday_hours INTEGER CHECK(tuesday_hours <= 9),
+        wednesday_hours INTEGER CHECK(wednesday_hours <= 9),
+        thursday_hours INTEGER CHECK(thursday_hours <= 9),
+        friday_hours INTEGER CHECK(friday_hours <= 9),
+        total_daily_hours INTEGER CHECK(total_daily_hours <= 9),
+        total_weekly_hours INTEGER CHECK(total_weekly_hours <= 45),
+        FOREIGN KEY (employee_id) REFERENCES employees(employee_id)
+    );
+''')
+
+# ... repeat for other tables
+
+# Commit changes
+conn.commit()
+
+# Close cursor and the connection
+cur.close()
+conn.close()
+
+
+
+
+
+
+# ye bhi working
+
+
+# def execute_action(intent, date=None, employee_id=None, role=None):  # Add role as an argument
+#     conn = sqlite3.connect('timesheets.db')
+#     c = conn.cursor()
+
+#     if date is not None:
+#         # Convert date to string and format it for SQLite
+#         date_str = date.strftime("'%Y-%m-%d'")
+
+#     if employee_id is not None:
+#         # Ensure the employee_id is properly quoted for the SQL query
+#         employee_id = f"'{employee_id}'"
+
+#     if role == 'Employee':
+#         # Employees can only see their own timesheets
+#         condition = f"WHERE employee_id = {employee_id}"
+#     elif role == 'Manager':
+#         # Managers can see their own timesheets and timesheets of employees under them
+#         condition = f"WHERE employee_id = {employee_id} OR employee_id IN (SELECT employee_id FROM employees WHERE manager_id = {employee_id})"
+#     else:
+#         # If the role is not recognized, don't show any timesheets
+#         condition = "WHERE 1 = 0"
+
+#     if intent == 'get_past_timesheet':
+#         c.execute(
+#             f"SELECT * FROM timesheets {condition} AND week_ending < {date_str}")
+#     elif intent == 'get_holidays':
+#         c.execute("SELECT date, name FROM holidays")
+
+#     elif intent == 'submit_timesheet' or intent == 'edit_timesheet':
+#         # Check if the date is a holiday
+#         c.execute(f"SELECT date FROM holidays WHERE date = {date_str}")
+#         if c.fetchone() is not None:
+#             print(f"{date_str} is a holiday. Timesheet cannot be filled.")
+#             return []
+#         # For submitting or editing timesheets, only allow if the timesheet belongs to the user
+#         condition = f"WHERE employee_id = {employee_id}"
+#         # Assuming 8 hours for Monday
+#         c.execute(
+#             f"INSERT INTO timesheets (employee_id, week_ending, monday_hours) VALUES ({employee_id}, {date_str}, 8)")
+#         # Assuming 8 hours for Monday
+#         c.execute(
+#             f"UPDATE timesheets SET monday_hours = 8 {condition} AND week_ending = {date_str}")
+
+
+#     elif intent == 'query_status':
+#         c.execute(
+#             f"SELECT total_weekly_hours FROM timesheets {condition} AND week_ending = {date_str}")
+
+#     rows = c.fetchall()
+#     conn.close()
+#     return rows
+
+
+# def generate_response(rows):
+#     if len(rows) == 0:
+#         return "No data found."
+#     else:
+#         return "\n".join(str(row) for row in rows)
+
+# def chatbot():
+#     employee_id, role = login()
+#     if employee_id is None:
+#         return
+
+#     while True:  # Loop until the user types "quit"
+#         # Ask for the question
+#         question = input("How can I assist you today? ")
+
+#         if question.lower() == 'quit':
+#             break
+
+#         intent = get_intent(question, pipeline)
+#         date = get_date(question)
+
+#         # If the intent is 'auto_submit_timesheet', fetch last week's timesheet and use it for the current week
+#         if intent == 'auto_submit_timesheet':
+#             intent = 'submit_timesheet'
+#             last_week_timesheet = execute_action('get_past_timesheet', date, employee_id, role)
+#             if last_week_timesheet:
+#                 # Assuming the timesheet format is (employee_id, week_ending, monday_hours, ...)
+#                 monday_hours = last_week_timesheet[0][2]
+#             else:
+#                 print("No timesheet from last week found. Please fill the timesheet manually.")
+#                 continue
+
+#         rows = execute_action(intent, date, employee_id, role)
+#         response = generate_response(rows)
+#         print(response)
+
+
+# if __name__ == '__main__':
+#     response = chatbot()
+#     print(response)
+
+
+# working here
+
+# import sqlite3
+# import datefinder
+# import joblib
+
+# # Load the model from the file
+# pipeline = joblib.load('intent_recognition_model.pkl')
+
+# def get_intent(question, model):
+#     return model.predict([question])[0]
+
+# def get_date(question):
+#     matches = datefinder.find_dates(question)
+#     for match in matches:
+#         return match
+#     return None
+
+# def execute_action(intent, date=None):
+#     conn = sqlite3.connect('timesheets.db')
+#     c = conn.cursor()
+
+#     if date is not None:
+#         # Convert date to string and format it for SQLite
+#         date_str = date.strftime("'%Y-%m-%d'")
+
+#     employee_id = '123'
+
+#     if intent == 'get_past_timesheet':
+#         c.execute(f"SELECT * FROM timesheets WHERE employee_id = {employee_id} AND week_ending < {date_str}")
+#     elif intent == 'submit_timesheet':
+#         c.execute(f"INSERT INTO timesheets (employee_id, week_ending, monday_hours) VALUES ({employee_id}, {date_str}, 8)")  # Assuming 8 hours for Monday
+#     elif intent == 'query_status':
+#         c.execute(f"SELECT total_weekly_hours FROM timesheets WHERE employee_id = {employee_id} AND week_ending = {date_str}")
+#     elif intent == 'edit_timesheet':
+#         c.execute(f"UPDATE timesheets SET monday_hours = 8 WHERE employee_id = {employee_id} AND week_ending = {date_str}")  # Assuming 8 hours for Monday
+
+#     rows = c.fetchall()
+#     conn.close()
+#     return rows
+
+# def generate_response(rows):
+#     if len(rows) == 0:
+#         return "No data found."
+#     else:
+#         return "\n".join(str(row) for row in rows)
+
+# def chatbot(question):
+#     intent = get_intent(question, pipeline)
+#     date = get_date(question)
+#     rows = execute_action(intent, date)
+#     response = generate_response(rows)
+#     return response
+
+# print(chatbot("Submit my timesheet for Feb 20th?"))
+
+
+
+# def login():
+#     conn = sqlite3.connect('timesheets.db')
+#     c = conn.cursor()
+
+#     employee_id = input("Please enter your employee ID: ")
+#     password = getpass("Please enter your password: ")
+
+#     c.execute(
+#         f"SELECT password_hash, role FROM employees WHERE employee_id = '{employee_id}'")
+#     result = c.fetchone()
+
+#     if result is None:
+#         print("Invalid employee ID.")
+#         return None, None
+
+#     password_hash, role = result
+
+#     if not check_password_hash(password_hash, password):
+#         print("Invalid password.")
+#         return None, None
+
+#     return employee_id, role
