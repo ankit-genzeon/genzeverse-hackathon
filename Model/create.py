@@ -26,11 +26,12 @@ c.execute('''
             id INTEGER PRIMARY KEY AUTOINCREMENT, 
             employee_id VARCHAR(50) NOT NULL UNIQUE,
             password_hash VARCHAR(128) NOT NULL,
-            role VARCHAR(20) NOT NULL CHECK(role in ('Employee', 'Manager')),
+            role VARCHAR(20) NOT NULL DEFAULT 'Employee',
             manager_id VARCHAR(50),
             FOREIGN KEY(manager_id) REFERENCES employees(employee_id)
           )
           ''')
+
 
 
 # Create notifications table

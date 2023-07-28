@@ -8,9 +8,9 @@ from werkzeug.security import generate_password_hash
 employees = [
     ('123', generate_password_hash('password123'), 'Employee'),
     ('124', generate_password_hash('password124'), 'Employee'),
-    ('125', generate_password_hash('password125'), 'Manager'),
+    ('125', generate_password_hash('password125'), 'Employee'),
     ('126', generate_password_hash('password126'), 'Employee'),
-    ('127', generate_password_hash('password127'), 'Manager')
+    ('127', generate_password_hash('password127'), 'Employee')
 ]
 
 c.executemany("INSERT INTO employees (employee_id, password_hash, role) VALUES (?, ?, ?)", employees)
